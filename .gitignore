@@ -1,6 +1,18 @@
-*.class
-
-# Package Files #
-*.jar
-*.war
-*.ear
+dist/
+build/
+out/
+*.iml
+*.ipr
+*.iws
+.idea/
+.DS_Store
+.Spotlight-V100
+.Trashes
+*.tmproj
+.classpath
+.project
+.settings
+.springBeans
+target
+*.log
+target/
