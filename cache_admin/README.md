@@ -1,7 +1,7 @@
 ## Cache-admin
 
 This is a very basic administrative extension for displaying various cache statistics and clearing the cache in a Micro web application.
-It is also illustrating the flexibility of the extensions support in the Micro framework. This extension is showing you how to define your own repositories and create your own UI, create Routes and publish local static content such as: `.css` and `.png` files, all these completely isolated from the the host application. It also demonstrates the ability of Micro's class loader to use 3rd party libraries.
+It is also illustrating the flexibility of the extensions support in the Micro framework. This extension is showing you how to define your own repositories and create your own UI, create Routes and publish local static content such as: `.css` and `.png` files, all these completely isolated from the host application. It also demonstrates the ability of Micro's class loader to use 3rd party libraries.
 
 ### Build from source
 
