@@ -1,0 +1,52 @@
+#if($cacheNames)
+<table class="pretty">
+    <thead>
+    <tr>
+        <th nowrap width="40%">Cache name</th>
+        <th width="50%">Stats (hit/miss)</th>
+        <th width="10%"></th>
+    </tr>
+    </thead>
+    <tbody>
+        #foreach($name in $cacheNames)
+            #set($cache = $site.CacheManager.getCache("$name"))
+        <tr>
+            <td valign="top"><span class="cache-name">${name}</span></td>
+            <td valign="top" nowrap>
+                <table class="clear">
+                    <tr>
+                        <td>disk:</td>
+                        <td>$cache.Statistics.onDiskHits / $cache.Statistics.onDiskMisses</td>
+                    </tr>
+                    <tr>
+                        <td>ofHeap:</td>
+                        <td>$cache.Statistics.offHeapHits / $cache.Statistics.offHeapMisses</td>
+                    </tr>
+                    <tr>
+                        <td>mem:</td>
+                        <td>$cache.Statistics.inMemoryHits / $cache.Statistics.inMemoryMisses</td>
+                    </tr>
+                    <tr>
+                        <td>size:</td>
+                        <td>$!{cache.Size}</td>
+                    </tr>
+                    <tr>
+                        <td>eviction count:</td>
+                        <td>$!{cache.Statistics.evictionCount}</td>
+                    </tr>
+                    <tr>
+                        <td>time:</td>
+                        <td>~$!{cache.Statistics.averageGetTime}</td>
+                    </tr>
+                </table>
+            </td>
+            <td align="center" valign="top" style="padding-top: 10px;">
+                <a href="$request.ContextPath/cache?clear=${name}" class="links">clear</a>
+            </td>
+        </tr>
+        #end
+    </tbody>
+</table>
+#else
+There are no cache spaces defined for this app.
+#end

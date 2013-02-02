@@ -1,0 +1,22 @@
+class: ca.simplegames.micro.extensions.cache.AdminExtension
+
+repositories:
+  ca_content:
+    path: web/views
+    config: config
+
+  ca_templates:
+    path: web/templates
+
+routes:
+  - route: "/cache/{image_file}.{type: css|png|jpg|jpeg|txt}"
+    method: get, head
+    controller:
+      name: ca.simplegames.micro.controllers.BinaryContent
+      options:
+        repository: ca_content
+        mime_types: { .txt: "text/plain;charset=UTF-8" }
+
+  - route: /cache/
+    controller:
+      name: CacheAdminRouteController.bsh

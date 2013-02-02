@@ -1,0 +1,88 @@
+/**
+ * a modest CSS used by the cache-admin extension. It is here
+ * mostly for demonstrating the support for serving "static" files
+ * from extension's own repos. Florin - 2013
+ */
+
+table.pretty {
+    max-width: 100%;
+    margin: 1.2em;
+    background: #eeeeee;
+    border-collapse: collapse;
+    border-spacing: 0;
+}
+
+table.pretty th {
+    border-bottom: 1px #888888 solid;
+    color: #555555;
+    padding: 0.2em;
+    height: 20px;
+    font-weight: bolder;
+    font-size: larger;
+}
+
+table.pretty td {
+    padding: 2px;
+}
+
+table.pretty th {
+    background: #cfcfcf;
+    text-align: left;
+}
+
+table.pretty tr {
+    line-height: 14px;
+    border-bottom: 1px #325d72 solid;
+}
+
+table.pretty tr:nth-child(odd) {
+    background-color: #ffffff;
+}
+
+table.pretty tr:nth-child(even) {
+
+    background-color: #f9f9f9;
+}
+
+table.pretty caption {
+    margin-left: inherit;
+    margin-right: inherit;
+}
+
+a.links {
+    padding: 3px 10px;
+    color: #fff;
+    background: gray;
+    -webkit-border-radius: 8px;
+    -moz-border-radius: 8px;
+    -o-border-radius: 8px;
+    border-radius: 8px;
+}
+
+.cache-name {
+    padding: 5px 5px;
+    color: #325d72;
+    font-weight: bolder;
+    font-size: larger;
+}
+
+span.header {
+    height: 300px;
+    /*background: #f8f8ff;*/
+    color: #325d72;
+    font-weight: bolder;
+    font-size: x-large;
+    padding: 5px 5px;
+}
+
+a.links:hover {
+    background: rgba(0, 0, 0, 0.4);
+}
+
+.footer {
+    color: gray;
+    /*font-weight: bolder;*/
+    font-size: small;
+    padding: 5px 15px;
+    float: inherit;
+}
