@@ -27,7 +27,7 @@ Edit the `application.bsh` startup controller and required the `cache_admin` ext
 
 restart the app and go to: `http://localhost:8080/cache`. The following interface will be shown:
 
-  ![screen](http://goo.gl/RdMtd)
+![screen](https://www.evernote.com/shard/s31/sh/36458891-8828-40ef-9c61-dcfb439961c8/66099e368840e0e7545d5e7a395afd0a/res/889bbec7-ecd4-4c42-91c2-1f350b91bcda/skitch.png)
   
 Please secure or hide the access to this extension when running in `production` mode.
 
