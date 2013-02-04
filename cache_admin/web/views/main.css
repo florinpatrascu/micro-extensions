@@ -4,6 +4,9 @@
  * from extension's own repos. Florin - 2013
  */
 
+body{
+    font-size: 85%;
+}
 table.pretty {
     max-width: 100%;
     margin: 1.2em;
