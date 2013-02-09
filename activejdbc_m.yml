@@ -1,0 +1,7 @@
+class: ca.simplegames.micro.extensions.ActivejdbcExtension
+options:
+  models: models # considering the app path, not config
+  debug: true
+  db: db.yml
+
+   

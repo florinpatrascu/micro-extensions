@@ -1,0 +1,5 @@
+controllers:
+  - controller:
+      name: FindArticles.bsh
+      options: 
+        top: 10
