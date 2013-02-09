@@ -1,6 +1,6 @@
 ## StringTemplate engine
 
-Extending Micro with support for StringTemplate rendering.
+This extension is adding the [StringTemplate](http://www.stringtemplate.org/) rendering support to Micro.
 
 ### Build from source
 
@@ -23,8 +23,10 @@ Edit the `application.bsh` startup controller and required the `st` extension, e
     site.ExtensionsManager
         .require("i18N")
         .require("st"); // <-- just added
+        
+That's all. The `ST` engine will be automatically configured by this extension and made available to the entire application.
 
-restart the app and go to: `http://localhost:8080/cache`. The following interface will be shown:
+Restart the app and use your ST views.
 
 ### License
 **Apache License 2**, see the `LICENSE` file in this folder.

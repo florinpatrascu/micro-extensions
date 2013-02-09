@@ -22,4 +22,5 @@ Using an extension is usually as simple as copying a folder and requiring a an e
 ### Extensions
 
  - [Cache admin](https://github.com/florinpatrascu/micro-extensions/tree/master/cache_admin) - minimalistic admin interface for the Micro cache.
+ - [ST](https://github.com/florinpatrascu/micro-extensions/tree/master/st) - extend Micro with the [StringTemplate](http://www.stringtemplate.org/) template engine.
 
