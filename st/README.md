@@ -1,6 +1,6 @@
-## StringTemplate engine
+## The `StringTemplate` engine
 
-Extending Micro with support for StringTemplate rendering.
+This extension is adding the [StringTemplate](http://www.stringtemplate.org/) rendering support to Micro.
 
 ### Build from source
 
@@ -17,14 +17,27 @@ Copy (or create symbolic links) the `st` folder and `st.yml` file to your applic
       ├── st/ 
       ├── st.yml
       └── ...
-  
-Edit the `application.bsh` startup controller and required the `st` extension, example:
+
+The `st.yml` may contain various configuration options for the `StringTemplate` engine. Example of a config file switching the `StringTemplate` expression delimiters from the default: `<` and `>`, to: `$` and `$`: 
+
+    class: ca.simplegames.micro.extensions.STExtension
+    engine:
+      name: st
+      class: ca.simplegames.micro.viewers.st.STViewRenderer
+      options:
+        delimiters: "$$"
+
+See [this link](http://www.antlr.org/wiki/display/ST/Setting+the+expression+delimiters) for more details.
+
+Edit the `application.bsh` startup controller and require the `st` extension, example:
 
     site.ExtensionsManager
         .require("i18N")
         .require("st"); // <-- just added
+        
+That's all. The `StringTemplate` engine will be automatically configured by this extension and made available to the entire application.
 
-restart the app and go to: `http://localhost:8080/cache`. The following interface will be shown:
+Restart the app and use your `StringTemplate` views.
 
 ### License
 **Apache License 2**, see the `LICENSE` file in this folder.
