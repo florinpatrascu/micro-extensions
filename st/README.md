@@ -29,7 +29,7 @@ The `st.yml` may contain various configuration options for the `StringTemplate` 
 
 See [this link](http://www.antlr.org/wiki/display/ST/Setting+the+expression+delimiters) for more details.
 
-Edit the `application.bsh` startup controller and required the `st` extension, example:
+Edit the `application.bsh` startup controller and require the `st` extension, example:
 
     site.ExtensionsManager
         .require("i18N")
