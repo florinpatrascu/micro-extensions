@@ -18,6 +18,8 @@ import ca.simplegames.micro.Globals;
 import ca.simplegames.micro.Micro;
 import ca.simplegames.micro.SiteContext;
 import ca.simplegames.micro.extensions.ExtensionsManager;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.jrack.Context;
 import org.jrack.Rack;
 import org.jrack.RackResponse;
@@ -35,6 +37,7 @@ import java.io.File;
  * @since $Revision$ (created: 2013-02-08)
  */
 public class ActivejdbcTest {
+    protected static final Log log = LogFactory.getLog(ActivejdbcTest.class);
     public static Micro micro;
     private static SiteContext SITE;
     private static String EXTENSION_NAME ="activejdbc_m";

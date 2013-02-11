@@ -190,6 +190,7 @@
     <target name="test" depends="dist, compile_test, compile_test_models, instrument_test_models">
         <junit printsummary="yes" fork="yes" haltonfailure="yes" dir="${test.dir}">
             <env key="EXTENSIONS_FOLDER" value="${EXTENSIONS_FOLDER}"/>
+
             <jvmarg value="-Dfile.encoding=UTF-8"/>
             <jvmarg value="-Dnet.sf.ehcache.skipUpdateCheck=true"/>
 

@@ -21,8 +21,9 @@ AJ = site.get("activejdbc_m");
 try{
 
     AJ.before();
+    articles = Article.findAll();
+    context.put("articles", articles);
 
-    print(">>>>>> "+Article.findAll());
 }catch(e){
     e.printStackTrace();
     log.error(e.Message);
@@ -30,5 +31,3 @@ try{
 }finally{
     AJ.after();
 }
-
-log.info("implement me");

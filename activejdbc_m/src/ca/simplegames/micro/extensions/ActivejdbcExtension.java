@@ -43,8 +43,7 @@ public class ActivejdbcExtension implements Extension {
     public static final String DEFAULT_DB_NAME = "default";
     private String name;
     private boolean debug;
-    private static Map<String, List<ConnectionSpecWrapper>> connectionWrappers =
-            new HashMap<String, List<ConnectionSpecWrapper>>();
+    private static Map<String, List<ConnectionSpecWrapper>> connectionWrappers = new HashMap<String, List<ConnectionSpecWrapper>>();
     private SiteContext site;
 
 
