@@ -72,12 +72,6 @@
         </fileset>
     </path>
 
-    <path id="classpath_build_time">
-        <fileset dir="build_time_libs">
-            <include name="**/*.jar"/>
-        </fileset>
-    </path>
-
     <!-- ====================================================================== -->
     <!-- Compile the source code.                                               -->
     <!-- ====================================================================== -->
@@ -163,7 +157,6 @@
                includeantruntime="false"
                optimize="${compiler.optimize}">
 
-            <classpath refid="classpath_build_time"/>
             <classpath refid="classpath_compile"/>
         </javac>
     </target>
