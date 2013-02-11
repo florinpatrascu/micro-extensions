@@ -177,17 +177,13 @@
                 <fileset dir="${build.dist}">
                     <include name="**/*.jar"/>
                 </fileset>
-                <fileset dir="build_time_libs">
-                    <include name="**/*.jar"/>
-                </fileset>
             </classpath>
-
         </java>
         <!--
         -->
 
         <!--<copy todir="${build.dir}/test/classes" >-->
-            <!--<fileset dir="build/test/models" includes="**"/>-->
+        <!--<fileset dir="build/test/models" includes="**"/>-->
         <!--</copy>-->
 
         <jar jarfile="${build.dist}/models.jar" basedir="${build.dir}/test/models">
