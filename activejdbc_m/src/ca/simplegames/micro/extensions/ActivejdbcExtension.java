@@ -17,15 +17,15 @@
 package ca.simplegames.micro.extensions;
 
 import ca.simplegames.micro.Extension;
+import ca.simplegames.micro.Globals;
 import ca.simplegames.micro.SiteContext;
-import ca.simplegames.micro.extensions.activejdbc.ConnectionSpecWrapper;
-import org.javalite.activejdbc.ConnectionJdbcSpec;
-import org.javalite.activejdbc.DB;
+import com.jolbox.bonecp.BoneCPDataSource;
+import org.javalite.activejdbc.Base;
 import org.yaml.snakeyaml.Yaml;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.util.*;
+import java.util.Map;
 
 /**
  * Adding support for the activejdbc library. Will set a global attribute that is available site wide
@@ -43,9 +43,8 @@ public class ActivejdbcExtension implements Extension {
     public static final String DEFAULT_DB_NAME = "default";
     private String name;
     private boolean debug;
-    private static Map<String, List<ConnectionSpecWrapper>> connectionWrappers = new HashMap<String, List<ConnectionSpecWrapper>>();
     private SiteContext site;
-
+    private BoneCPDataSource ds = null;
 
     @SuppressWarnings("unchecked")
     @Override
@@ -63,17 +62,26 @@ public class ActivejdbcExtension implements Extension {
         if (dbConfigFile.exists()) {
             Map<String, Object> dbConfigForAll = (Map<String, Object>) new Yaml().load(new FileInputStream(dbConfigFile));
             Map<String, Object> dbConfig = (Map<String, Object>) dbConfigForAll.get(site.getMicroEnv());
-            ConnectionSpecWrapper jdbcConnectionWrapper = new ConnectionSpecWrapper();
             //todo: check if jdbc/jndi and implement each case
 
             if (dbConfig != null) {
-                jdbcConnectionWrapper.setConnectionSpec(
-                        new ConnectionJdbcSpec(
-                                (String) dbConfig.get("driver"), (String) dbConfig.get("url"),
-                                (String) dbConfig.get("user"), (String) dbConfig.get("password")));
+                String driver = (String) dbConfig.get("driver");
+                Class.forName(driver);
+                ds = new BoneCPDataSource();
+                ds.setJdbcUrl((String) dbConfig.get("url"));
+                ds.setUsername((String) dbConfig.get("user"));
+                ds.setPassword(
+                        dbConfig.get("password") != null ?
+                                (String) dbConfig.get("password") : Globals.EMPTY_STRING);
 
-                // todo add multiple database connections
-                connectionWrappers.put(site.getMicroEnv(), Collections.singletonList(jdbcConnectionWrapper));
+                Integer maxConnections = dbConfig.get("pool") != null ? (Integer) dbConfig.get("pool") : 5;
+
+                int minConnections = (int) Math.max(1, Math.ceil(maxConnections / 3)); // todo let the user configure it
+                ds.setMaxConnectionsPerPartition(minConnections);
+
+                ds.setMinConnectionsPerPartition(maxConnections / 3); // todo let the user configure it
+                ds.setPartitionCount(1);
+
                 this.name = name;
             } else {
                 throw new ExceptionInInitializerError(
@@ -92,74 +100,38 @@ public class ActivejdbcExtension implements Extension {
     }
 
     public void before() {
-        before(null, false);
+        before(false);
     }
 
-    public void before(String dbName, boolean manageTransaction) {
-        String dbNameWithDefault = dbName == null ? DEFAULT_DB_NAME : dbName;
-        List<ConnectionSpecWrapper> connectionWrappers = getConnectionWrappers(dbNameWithDefault);
-
-        for (ConnectionSpecWrapper connectionWrapper : connectionWrappers) {
-            DB db = new DB(connectionWrapper.getDbName());
-            db.open(connectionWrapper.getConnectionSpec());
-            if (manageTransaction) {
-                db.openTransaction();
-            }
+    public void before(boolean manageTransaction) {
+        Base.open(ds);
+        if (manageTransaction) {
+            Base.openTransaction();
         }
-
     }
 
     public void after() {
-        after(null, false);
+        after(false);
     }
 
-    public void after(String dbName, boolean manageTransaction) {
-        String dbNameWithDefault = dbName == null ? DEFAULT_DB_NAME : dbName;
-        List<ConnectionSpecWrapper> connectionWrappers = getConnectionWrappers(dbNameWithDefault);
-        if (connectionWrappers != null && !connectionWrappers.isEmpty()) {
-            for (ConnectionSpecWrapper connectionWrapper : connectionWrappers) {
-                DB db = new DB(connectionWrapper.getDbName());
-                if (manageTransaction) {
-                    db.commitTransaction();
-                }
-                db.close();
-            }
+    public void after(boolean manageTransaction) {
+        if (manageTransaction) {
+            Base.commitTransaction();
+        }
+        if (Base.hasConnection()) {
+            Base.close();
         }
     }
 
     public void onException() {
-        onException(null, false);
+        onException(false);
     }
 
-    public void onException(String dbName, boolean manageTransaction) {
-
-        String dbNameWithDefault = dbName == null ? DEFAULT_DB_NAME : dbName;
-        List<ConnectionSpecWrapper> connectionWrappers = getConnectionWrappers(dbNameWithDefault);
-
-        if (connectionWrappers != null && !connectionWrappers.isEmpty()) {
-            for (ConnectionSpecWrapper connectionWrapper : connectionWrappers) {
-                DB db = new DB(connectionWrapper.getDbName());
-                if (manageTransaction) {
-                    db.rollbackTransaction();
-                }
-                db.close();
-            }
+    public void onException(boolean manageTransaction) {
+        if (manageTransaction) {
+            Base.rollbackTransaction();
         }
-    }
-
-    /**
-     * If dbName not provided, returns all connections which are not for testing.
-     *
-     * @return all the connections for a db name in a given environment
-     */
-    private List<ConnectionSpecWrapper> getConnectionWrappers(String dbName) {
-        List<ConnectionSpecWrapper> result = new LinkedList<ConnectionSpecWrapper>();
-
-        for (ConnectionSpecWrapper connectionWrapper : connectionWrappers.get(site.getMicroEnv())) {
-            if ((dbName == null || dbName.equals(connectionWrapper.getDbName())))
-                result.add(connectionWrapper);
-        }
-        return result;
+        Base.close();
     }
 
     public boolean isDebug() {

@@ -22,11 +22,10 @@ try{
 
     AJ.before();
     articles = Article.findAll();
-    context.put("articles", articles);
-
+    context.put("totalArticles", articles.size());
+    context.put("article", articles.get(0).toMap());
 }catch(e){
     e.printStackTrace();
-    log.error(e.Message);
     AJ.onException();
 }finally{
     AJ.after();

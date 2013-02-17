@@ -172,18 +172,18 @@
                 </fileset>
             </classpath>
         </java>
+        <copy todir="${build.dir}/test/classes" >
+          <fileset dir="build/test/models" includes="**"/>
+        </copy>
         <!--
-        -->
 
-        <!--<copy todir="${build.dir}/test/classes" >-->
-        <!--<fileset dir="build/test/models" includes="**"/>-->
-        <!--</copy>-->
 
         <jar jarfile="${build.dist}/models.jar" basedir="${build.dir}/test/models">
             <manifest>
                 <attribute name="Built-Date" value="${TODAY}"/>
             </manifest>
         </jar>
+        -->
 
     </target>
 

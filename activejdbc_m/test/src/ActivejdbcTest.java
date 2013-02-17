@@ -81,7 +81,9 @@ public class ActivejdbcTest {
                 .with(Rack.PATH_INFO, "/index.html");
 
         RackResponse response = micro.call(input);
-        Assert.assertTrue(RackResponse.getBodyAsString(response).contains("Welcome!"));
+        final String bodyAsString = RackResponse.getBodyAsString(response);
+        Assert.assertTrue(bodyAsString.contains("Total Articles: 2"));
+        Assert.assertTrue(bodyAsString.contains("title=activejdbc_m"));
     }
 
 }
