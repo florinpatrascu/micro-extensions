@@ -137,5 +137,9 @@ public class ActivejdbcExtension implements Extension {
     public boolean isDebug() {
         return debug;
     }
+
+    public Base getBase(){
+        return new Base();
+    }
 }
 
