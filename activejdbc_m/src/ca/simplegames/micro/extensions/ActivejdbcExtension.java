@@ -52,17 +52,16 @@ public class ActivejdbcExtension implements Extension {
         this.site = site;
         site.with(name, this); //<- set a global attribute that can access this Extension by name
         File appPath = site.getApplicationPath();
-        File extensionPath = new File(appPath, "/extensions/" + name);
+        //File extensionPath = new File(appPath, "/extensions/" + name);
         File appConfigPath = site.getApplicationConfigPath();
         Map<String, Object> options = (Map<String, Object>) configuration.get("options");
         File dbConfigFile = new File(appConfigPath, (String) options.get("db"));
-        File modelsDir = new File(appConfigPath, (String) options.get("models"));
+        //File modelsDir = new File(appConfigPath, (String) options.get("models"));
         debug = (Boolean) options.get("debug");
 
         if (dbConfigFile.exists()) {
             Map<String, Object> dbConfigForAll = (Map<String, Object>) new Yaml().load(new FileInputStream(dbConfigFile));
             Map<String, Object> dbConfig = (Map<String, Object>) dbConfigForAll.get(site.getMicroEnv());
-            //todo: check if jdbc/jndi and implement each case
 
             if (dbConfig != null) {
                 String driver = (String) dbConfig.get("driver");
@@ -77,11 +76,9 @@ public class ActivejdbcExtension implements Extension {
                 Integer maxConnections = dbConfig.get("pool") != null ? (Integer) dbConfig.get("pool") : 5;
 
                 int minConnections = (int) Math.max(1, Math.ceil(maxConnections / 3)); // todo let the user configure it
-                ds.setMaxConnectionsPerPartition(minConnections);
-
-                ds.setMinConnectionsPerPartition(maxConnections / 3); // todo let the user configure it
+                ds.setMaxConnectionsPerPartition(maxConnections);
+                ds.setMinConnectionsPerPartition(minConnections);
                 ds.setPartitionCount(1);
-
                 this.name = name;
             } else {
                 throw new ExceptionInInitializerError(
@@ -115,11 +112,14 @@ public class ActivejdbcExtension implements Extension {
     }
 
     public void after(boolean manageTransaction) {
-        if (manageTransaction) {
-            Base.commitTransaction();
-        }
         if (Base.hasConnection()) {
-            Base.close();
+            try {
+                if (manageTransaction) {
+                    Base.commitTransaction();
+                }
+            } finally {
+                Base.close();
+            }
         }
     }
 
@@ -131,14 +131,13 @@ public class ActivejdbcExtension implements Extension {
         if (manageTransaction) {
             Base.rollbackTransaction();
         }
-        Base.close();
     }
 
     public boolean isDebug() {
         return debug;
     }
 
-    public Base getBase(){
+    public Base getBase() {
         return new Base();
     }
 }
