@@ -11,7 +11,7 @@ Using an extension is usually as simple as copying a folder and requiring a an e
           ├── cache_admin.yml
           └── i18N.yml
   </code></pre>
- 2. Edit the `application.bsh` startup controller and require the extension, example:
+ 2. Edit the `application.bsh` startup controller and require the desired extension, example:
     <pre><code>
      site.ExtensionsManager
          .require("i18N")         // <--
@@ -21,6 +21,7 @@ Using an extension is usually as simple as copying a folder and requiring a an e
 
 ### Extensions
 
- - [Cache admin](https://github.com/florinpatrascu/micro-extensions/tree/master/cache_admin) - minimalistic admin interface for the Micro cache.
- - [ST](https://github.com/florinpatrascu/micro-extensions/tree/master/st) - extend Micro with the [StringTemplate](http://www.stringtemplate.org/) template engine.
+ - [ActiveJDBC-M](activejdbc_m/) - [ActiveJDBC](https://code.google.com/p/activejdbc/) is a Java implementation of the Active Record design pattern.
+ - [Cache admin](cache_admin/) - minimalistic admin interface for the Micro cache.
+ - [ST](st/) - extend Micro with the [StringTemplate](http://www.stringtemplate.org/) template engine.
 
