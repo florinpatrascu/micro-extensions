@@ -4,6 +4,7 @@ out/
 *.iml
 *.ipr
 *.iws
+*.ids
 .idea/
 .DS_Store
 .Spotlight-V100
