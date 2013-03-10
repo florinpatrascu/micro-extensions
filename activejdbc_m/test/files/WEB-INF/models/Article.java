@@ -1,4 +1,5 @@
-package ca.simplegames.micro.test.models;/*
+package models;
+/*
  * Copyright (c)2013 Florin T.Pătraşcu
  *
  * Licensed under the Apache License, Version 2.0 (the "License");

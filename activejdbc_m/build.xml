@@ -146,45 +146,32 @@
     <!-- ====================================================================== -->
     <target name="compile_test_models">
         <mkdir dir="${build.dir}"/>
-        <delete dir="${build.dir}/test/models"/>
-        <mkdir dir="${build.dir}/test/models"/>
+        <delete dir="${build.dir}/test/classes/models"/>
+        <delete dir="${build.dir}/test/classes/controllers"/>
+        <mkdir dir="${build.dir}/test/classes/models"/>
+        <mkdir dir="${build.dir}/test/classes/controllers"/>
 
-        <javac srcdir="${test.dir}/files/WEB-INF/models"
-               destdir="${build.dir}/test/models"
+        <javac destdir="${build.dir}/test/classes"
                debug="${compiler.debug}"
                deprecation="${compiler.generate.no.warnings}"
                encoding="utf8"
                includeantruntime="false"
                optimize="${compiler.optimize}">
-
+            <src path="${test.dir}/files/WEB-INF/models::${test.dir}/files/WEB-INF/controllers"/>
             <classpath refid="classpath_compile"/>
         </javac>
     </target>
 
     <target name="instrument_test_models">
         <java classname="org.javalite.instrumentation.Main">
-            <sysproperty key="outputDirectory" value="build/test/models"/>
-
+            <sysproperty key="outputDirectory" value="${build.dir}/test/classes"/>
             <classpath>
-                <pathelement location="${build.dir}/test/models"/>
                 <fileset dir="${build.dist}">
                     <include name="**/*.jar"/>
                 </fileset>
+                <pathelement location="${build.dir}/test/classes"/>
             </classpath>
         </java>
-        <copy todir="${build.dir}/test/classes" >
-          <fileset dir="build/test/models" includes="**"/>
-        </copy>
-        <!--
-
-
-        <jar jarfile="${build.dist}/models.jar" basedir="${build.dir}/test/models">
-            <manifest>
-                <attribute name="Built-Date" value="${TODAY}"/>
-            </manifest>
-        </jar>
-        -->
-
     </target>
 
     <target name="test" depends="dist, compile_test, compile_test_models, instrument_test_models">

@@ -1,5 +1,5 @@
 controllers:
   - controller:
-      name: FindArticles.bsh
+      name: controllers.FindArticles
       options: 
         top: 10
