@@ -65,7 +65,7 @@ public class STViewRenderer implements ViewRenderer {
             } catch (FileNotFoundException e) {
                 throw new FileNotFoundException(String.format("%s not found.", path));
             } catch (Exception e) {
-                throw new ViewException(e);
+                throw new ViewException(e.getMessage());
             }
         }
         return 0;
