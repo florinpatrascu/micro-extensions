@@ -28,6 +28,7 @@ import ca.simplegames.micro.viewers.ViewRenderer;
 import com.github.mustachejava.DefaultMustacheFactory;
 import com.github.mustachejava.Mustache;
 import com.github.mustachejava.MustacheFactory;
+import net.sf.ehcache.Element;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -64,10 +65,12 @@ public class MustacheViewRenderer implements ViewRenderer {
                 StringWriter sw = new StringWriter();
                 StringReader source = new StringReader(repository.read(path));
                 if (mustaches != null) {
-                    mustache = (Mustache) mustaches.get(key);
-                    if (mustache == null) {
+                    Element mustacheElement = (Element) mustaches.get(key);
+                    if (mustacheElement == null) {
                         mustache = mf.compile(source, Globals.UTF8);
-                        mustaches.put(key, mustache);
+                        mustaches.put(key, new Element(NAME, mustache));
+                    }else{
+                        mustache = (Mustache) mustacheElement.getObjectValue();
                     }
                 } else {
                     mustache = mf.compile(source, Globals.UTF8);
