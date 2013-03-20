@@ -28,6 +28,8 @@ import ca.simplegames.micro.viewers.ViewRenderer;
 import com.github.mustachejava.DefaultMustacheFactory;
 import com.github.mustachejava.Mustache;
 import com.github.mustachejava.MustacheFactory;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 import java.io.FileNotFoundException;
 import java.io.StringReader;
@@ -43,6 +45,8 @@ import java.util.Map;
  * @since $Revision$ (created: 2013-02-03 7:42 PM)
  */
 public class MustacheViewRenderer implements ViewRenderer {
+    protected static final Log log = LogFactory.getLog(MustacheViewRenderer.class);
+
     public static final String NAME = "mustache";
     public static final String KEY_SEP = ":";
     private static MustacheFactory mf = new DefaultMustacheFactory();
@@ -87,12 +91,19 @@ public class MustacheViewRenderer implements ViewRenderer {
     @Override
     @SuppressWarnings("unchecked")
     public void loadConfiguration(SiteContext site, Map<String, Object> configuration) throws Exception {
-        if (site.isProduction()) {
-            mustaches = site.getCacheManager().getCacheWithDefault("mustache_templates_cache");
-        }
+        String cacheName = "views";
 
         if (configuration != null) {
-            // is there anything else we can do for you Mr. Mustache?
+            cacheName = (String) configuration.get("cache");
+        }
+
+        if (site.isProduction()) {
+            try {
+                mustaches = site.getCacheManager().getCache(cacheName);
+            } catch (Exception e) {
+                log.error(String.format("Can't create the cache: `%s`; Mustache will run without the cache.",
+                        cacheName));
+            }
         }
     }
 
