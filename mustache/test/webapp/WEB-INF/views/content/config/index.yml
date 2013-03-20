@@ -1,0 +1,4 @@
+template: clear_mustache
+controllers:
+  - controller:
+      name: ComplexObject.bsh # kind of

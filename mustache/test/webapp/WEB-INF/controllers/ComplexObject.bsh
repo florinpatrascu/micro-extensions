@@ -1,0 +1,4 @@
+context.put("name", "Chris");
+context.put("value", 10000);
+context.put("taxed_value", 6000);
+context.put("in_ca", true);

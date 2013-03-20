@@ -1,0 +1,5 @@
+class: ca.simplegames.micro.extensions.MustacheExtension
+engine:
+  name: mustache
+  class: ca.simplegames.micro.viewers.mustache.MustacheViewRenderer
+  options: {}

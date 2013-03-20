@@ -1,0 +1,103 @@
+/*
+ * Copyright (c)2013 Florin T.Pătraşcu
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package ca.simplegames.micro.viewers.mustache;
+
+import ca.simplegames.micro.Globals;
+import ca.simplegames.micro.MicroContext;
+import ca.simplegames.micro.SiteContext;
+import ca.simplegames.micro.cache.MicroCache;
+import ca.simplegames.micro.repositories.Repository;
+import ca.simplegames.micro.utils.CollectionUtils;
+import ca.simplegames.micro.utils.IO;
+import ca.simplegames.micro.viewers.ViewException;
+import ca.simplegames.micro.viewers.ViewRenderer;
+import com.github.mustachejava.DefaultMustacheFactory;
+import com.github.mustachejava.Mustache;
+import com.github.mustachejava.MustacheFactory;
+
+import java.io.*;
+import java.nio.charset.Charset;
+import java.util.Map;
+
+/**
+ * Simple StringTemplate view renderer.
+ * <p/>
+ * If you learn more about the StringTemplate, visit their site:
+ * - http://www.antlr.org/wiki/display/ST4/StringTemplate+4+Wiki+Home
+ *
+ * @author <a href="mailto:florin.patrascu@gmail.com">Florin T.PATRASCU</a>
+ * @since $Revision$ (created: 2013-02-03 7:42 PM)
+ */
+public class MustacheViewRenderer implements ViewRenderer {
+    public static final String NAME = "mustache";
+    public static final String KEY_SEP = ":";
+    private static MustacheFactory mf = new DefaultMustacheFactory();
+    private MicroCache mustaches = null;
+
+    @Override
+    public long render(String path, Repository repository, MicroContext context, Writer out) throws FileNotFoundException, ViewException {
+
+        if (repository != null && out != null) {
+
+            try {
+                Mustache mustache;
+                String key = repository.getName() + KEY_SEP + path;
+
+                StringWriter sw = new StringWriter();
+                StringReader source = new StringReader(repository.read(path));
+                if (mustaches != null) {
+                    mustache = (Mustache) mustaches.get(key);
+                    if (mustache == null) {
+                        mustache = mf.compile(source, Globals.UTF8);
+                        mustaches.put(key, mustache);
+                    }
+                } else {
+                    mustache = mf.compile(source, Globals.UTF8);
+                }
+
+                if (!CollectionUtils.isEmpty(context.getMap())) {
+                    mustache.execute(sw, context.getMap());
+                }
+
+                return IO.copy(new StringReader(sw.toString()), out);
+
+            } catch (FileNotFoundException e) {
+                throw new FileNotFoundException(String.format("%s not found.", path));
+            } catch (Exception e) {
+                throw new ViewException(e.getMessage());
+            }
+        }
+        return 0;
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public void loadConfiguration(SiteContext site, Map<String, Object> configuration) throws Exception {
+        if (site.isProduction()) {
+            mustaches = site.getCacheManager().getCacheWithDefault("mustache_templates_cache");
+        }
+
+        if (configuration != null) {
+            // is there anything else we can do for you Mr. Mustache?
+        }
+    }
+
+    @Override
+    public String getName() {
+        return NAME;
+    }
+}
