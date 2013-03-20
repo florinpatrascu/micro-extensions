@@ -22,7 +22,7 @@ import ca.simplegames.micro.SiteContext;
 import java.util.Map;
 
 /**
- * Support for the Mustache.java library
+ * Support for loading the Mustache View Renderer
  *
  * @author <a href="mailto:florin.patrascu@gmail.com">Florin T.PATRASCU</a>
  * @since $Revision$ (created: 2013-02-03 7:43 PM)

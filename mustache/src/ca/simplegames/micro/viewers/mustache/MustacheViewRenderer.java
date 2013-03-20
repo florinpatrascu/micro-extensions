@@ -29,15 +29,15 @@ import com.github.mustachejava.DefaultMustacheFactory;
 import com.github.mustachejava.Mustache;
 import com.github.mustachejava.MustacheFactory;
 
-import java.io.*;
-import java.nio.charset.Charset;
+import java.io.FileNotFoundException;
+import java.io.StringReader;
+import java.io.StringWriter;
+import java.io.Writer;
 import java.util.Map;
 
 /**
- * Simple StringTemplate view renderer.
- * <p/>
- * If you learn more about the StringTemplate, visit their site:
- * - http://www.antlr.org/wiki/display/ST4/StringTemplate+4+Wiki+Home
+ * A Mustache(.java) view renderer, using:
+ * - https://github.com/spullara/mustache.java
  *
  * @author <a href="mailto:florin.patrascu@gmail.com">Florin T.PATRASCU</a>
  * @since $Revision$ (created: 2013-02-03 7:42 PM)
