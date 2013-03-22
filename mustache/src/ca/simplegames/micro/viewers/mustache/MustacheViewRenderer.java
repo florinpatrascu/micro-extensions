@@ -67,13 +67,13 @@ public class MustacheViewRenderer implements ViewRenderer {
                 if (mustaches != null) {
                     Element mustacheElement = (Element) mustaches.get(key);
                     if (mustacheElement == null) {
-                        mustache = mf.compile(source, Globals.UTF8);
+                        mustache = mf.compile(source, key);
                         mustaches.put(key, new Element(NAME, mustache));
                     }else{
                         mustache = (Mustache) mustacheElement.getObjectValue();
                     }
                 } else {
-                    mustache = mf.compile(source, Globals.UTF8);
+                    mustache = mf.compile(source, key);
                 }
 
                 if (!CollectionUtils.isEmpty(context.getMap())) {
