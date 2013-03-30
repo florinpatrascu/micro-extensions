@@ -23,6 +23,7 @@ import com.jolbox.bonecp.BoneCPDataSource;
 import org.javalite.activejdbc.Base;
 import org.yaml.snakeyaml.Yaml;
 
+import javax.sql.DataSource;
 import java.io.File;
 import java.io.FileInputStream;
 import java.util.Map;
@@ -43,13 +44,11 @@ public class ActivejdbcExtension implements Extension {
     public static final String DEFAULT_DB_NAME = "default";
     private String name;
     private boolean debug;
-    private SiteContext site;
     private BoneCPDataSource ds = null;
 
     @SuppressWarnings("unchecked")
     @Override
     public Extension register(String name, SiteContext site, Map<String, Object> configuration) throws Exception {
-        this.site = site;
         site.with(name, this); //<- set a global attribute that can access this Extension by name
         File appPath = site.getApplicationPath();
         //File extensionPath = new File(appPath, "/extensions/" + name);
@@ -139,6 +138,10 @@ public class ActivejdbcExtension implements Extension {
 
     public Base getBase() {
         return new Base();
+    }
+
+    public DataSource getDS() {
+        return ds;
     }
 }
 

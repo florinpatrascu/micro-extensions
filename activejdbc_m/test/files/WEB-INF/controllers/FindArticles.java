@@ -17,7 +17,7 @@ import java.util.Map;
  */
 public class FindArticles implements Controller {
     @Override
-    public void execute(MicroContext context, Map map) throws ControllerException, FileNotFoundException {
+    public void execute(MicroContext context, Map map) throws ControllerException {
         SiteContext site = context.getSiteContext();
         ActivejdbcExtension ajExtension = (ActivejdbcExtension) site.get("activejdbc_m");
         if(ajExtension!=null){
