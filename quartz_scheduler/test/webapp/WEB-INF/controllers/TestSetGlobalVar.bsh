@@ -1,0 +1,10 @@
+/**
+ * This action is setting a global variable called: 'quartzified' that can be used by unit tests triggering delayed
+ * controllers or such. The consumer ideally will also delete this variable from the site, so other calls can be run
+ * sequentially #methinks
+ *
+ * ッFlorin, 2013
+ */
+
+site.with("quartzified", Boolean.TRUE);
+log.info("quartzified var was defined.");
