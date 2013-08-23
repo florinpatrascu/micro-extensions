@@ -22,6 +22,7 @@ To configure Quartz, please visit their site for learning the ins and the outs o
 You can imagine various scenarios, this README is only covering some of the most common use cases. Also, there is a very basic demo web application demonstrating some of the use cases. You can find the demo app [here](...todo...).
 
 **Delayed controllers**
+
 Some of you are familiar with the [delayed_job](https://rubygems.org/gems/delayed_job) gem from Ruby, implementation encapsulating the common pattern of asynchronously executing longer tasks in the background. Our scheduler is a tentative to help you achieve the same behavior. The simples and most common use case, is to run a controller asynchronously at a specific date/time or after a small period of time. Provided you have the `MicroScheduler` enabled in your Micro web application, you can simply do this (excerpt from a .BSH scripting controller):
 
     Scheduler = site.get("MicroScheduler").Scheduler;
@@ -37,6 +38,7 @@ The code above will schedule the `HelloWorld.bsh` controller to run after 5 seco
 You can also find some useful date/time utility methods in [Quartz itself](http://quartz-scheduler.org/api/2.2.0/org/quartz/DateBuilder.html), but I won't cover those here.
 
 **Run a controller at a specific time**
+
 And this is how you can schedule a controller to be executed at a specific date and time. For this example I am using
 a Beanshell controller and JodaTime.
 
@@ -48,6 +50,7 @@ a Beanshell controller and JodaTime.
 The `HappyBirthDay.bsh` controller will be executed on the 13th of May, 2014 at exactly 12:00am. Warning, you will have to use a durable Quartz job store, otherwise you'll not be able to persist your jobs and you'll lose your scheduling if the web app is restarted. See the [JDBCJobStore](http://quartz-scheduler.org/documentation/quartz-2.x/tutorials/tutorial-lesson-09), for more details.
 
 **Scheduling a controller execution with a Cron-like syntax**
+
 Most of you are familiar with [Cron](http://en.wikipedia.org/wiki/Cron); the unix utility created by [Brian Kernighan](http://en.wikipedia.org/wiki/Brian_Kernighan) very many moons ago. Our micro scheduler allows you to plan controller executions using the familiar Cron syntax, example:
 
     // Schedule a controller that fires at 10:30, 11:30, 12:30, and 13:30, on every Wednesday and Friday.
