@@ -43,5 +43,9 @@ public class MustacheExtension implements Extension {
     public String getName() {
         return name;
     }
+
+  @Override
+  public void shutdown() {
+  }
 }
 

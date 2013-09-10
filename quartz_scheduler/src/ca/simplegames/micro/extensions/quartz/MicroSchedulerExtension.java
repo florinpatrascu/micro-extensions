@@ -43,4 +43,14 @@ public class MicroSchedulerExtension implements Extension {
   public String getName() {
     return this.name;
   }
+
+  @Override
+  public void shutdown() {
+    try {
+      scheduler.stop();
+      log.info("Scheduler stopped, as requested.");
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+  }
 }

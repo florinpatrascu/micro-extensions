@@ -31,33 +31,37 @@ import java.util.Map;
  * @since $Revision$ (created: 2013-01-30 9:05 PM)
  */
 public class AdminExtension implements Extension {
-    private String name;
+  private String name;
 
-    @SuppressWarnings("unchecked")
-    @Override
-    public Extension register(String name, SiteContext site, Map<String, Object> configuration) throws Exception {
-        File extensionPath = new File(site.getApplicationConfigPath(), "/extensions/cache_admin");
-        this.name = name;
+  @SuppressWarnings("unchecked")
+  @Override
+  public Extension register(String name, SiteContext site, Map<String, Object> configuration) throws Exception {
+    File extensionPath = new File(site.getApplicationConfigPath(), "/extensions/cache_admin");
+    this.name = name;
 
-        site.getControllerManager().addPathToControllers(new File(extensionPath, "/controllers")) ;
-        site.getRepositoryManager().addRepositories(
-                extensionPath, (Map<String, Object>) configuration.get("repositories"));
+    site.getControllerManager().addPathToControllers(new File(extensionPath, "/controllers"));
+    site.getRepositoryManager().addRepositories(
+        extensionPath, (Map<String, Object>) configuration.get("repositories"));
 
-        for (Map<String, Object> routeMap : (List<Map<String, Object>>)configuration.get("routes")) {
-            try {
-                String routePath = (String) routeMap.get("route");
-                Route route = new RouteWrapper(routePath, routeMap);
-                site.getRouteManager().add(route);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-
-        return this;
+    for (Map<String, Object> routeMap : (List<Map<String, Object>>) configuration.get("routes")) {
+      try {
+        String routePath = (String) routeMap.get("route");
+        Route route = new RouteWrapper(routePath, routeMap);
+        site.getRouteManager().add(route);
+      } catch (Exception e) {
+        e.printStackTrace();
+      }
     }
 
-    @Override
-    public String getName() {
-        return name;
-    }
+    return this;
+  }
+
+  @Override
+  public String getName() {
+    return name;
+  }
+
+  @Override
+  public void shutdown() {
+  }
 }

@@ -41,107 +41,112 @@ import java.util.Map;
  * @since $Revision$ (created: 2013-02-06 9:23 PM)
  */
 public class ActivejdbcExtension implements Extension {
-    public static final String DEFAULT_DB_NAME = "default";
-    private String name;
-    private boolean debug;
-    private BoneCPDataSource ds = null;
+  public static final String DEFAULT_DB_NAME = "default";
+  private String name;
+  private boolean debug;
+  private BoneCPDataSource ds = null;
 
-    @SuppressWarnings("unchecked")
-    @Override
-    public Extension register(String name, SiteContext site, Map<String, Object> configuration) throws Exception {
-        site.with(name, this); //<- set a global attribute that can access this Extension by name
-        File appPath = site.getApplicationPath();
-        //File extensionPath = new File(appPath, "/extensions/" + name);
-        File appConfigPath = site.getApplicationConfigPath();
-        Map<String, Object> options = (Map<String, Object>) configuration.get("options");
-        File dbConfigFile = new File(appConfigPath, (String) options.get("db"));
-        //File modelsDir = new File(appConfigPath, (String) options.get("models"));
-        debug = (Boolean) options.get("debug");
+  @SuppressWarnings("unchecked")
+  @Override
+  public Extension register(String name, SiteContext site, Map<String, Object> configuration) throws Exception {
+    site.with(name, this); //<- set a global attribute that can access this Extension by name
+    File appPath = site.getApplicationPath();
+    //File extensionPath = new File(appPath, "/extensions/" + name);
+    File appConfigPath = site.getApplicationConfigPath();
+    Map<String, Object> options = (Map<String, Object>) configuration.get("options");
+    File dbConfigFile = new File(appConfigPath, (String) options.get("db"));
+    //File modelsDir = new File(appConfigPath, (String) options.get("models"));
+    debug = (Boolean) options.get("debug");
 
-        if (dbConfigFile.exists()) {
-            Map<String, Object> dbConfigForAll = (Map<String, Object>) new Yaml().load(new FileInputStream(dbConfigFile));
-            Map<String, Object> dbConfig = (Map<String, Object>) dbConfigForAll.get(site.getMicroEnv());
+    if (dbConfigFile.exists()) {
+      Map<String, Object> dbConfigForAll = (Map<String, Object>) new Yaml().load(new FileInputStream(dbConfigFile));
+      Map<String, Object> dbConfig = (Map<String, Object>) dbConfigForAll.get(site.getMicroEnv());
 
-            if (dbConfig != null) {
-                String driver = (String) dbConfig.get("driver");
-                Class.forName(driver);
-                ds = new BoneCPDataSource();
-                ds.setJdbcUrl((String) dbConfig.get("url"));
-                ds.setUsername((String) dbConfig.get("user"));
-                ds.setPassword(
-                        dbConfig.get("password") != null ?
-                                (String) dbConfig.get("password") : Globals.EMPTY_STRING);
+      if (dbConfig != null) {
+        String driver = (String) dbConfig.get("driver");
+        Class.forName(driver);
+        ds = new BoneCPDataSource();
+        ds.setJdbcUrl((String) dbConfig.get("url"));
+        ds.setUsername((String) dbConfig.get("user"));
+        ds.setPassword(
+            dbConfig.get("password") != null ?
+                (String) dbConfig.get("password") : Globals.EMPTY_STRING);
 
-                Integer maxConnections = dbConfig.get("pool") != null ? (Integer) dbConfig.get("pool") : 5;
+        Integer maxConnections = dbConfig.get("pool") != null ? (Integer) dbConfig.get("pool") : 5;
 
-                int minConnections = (int) Math.max(1, Math.ceil(maxConnections / 3)); // todo let the user configure it
-                ds.setMaxConnectionsPerPartition(maxConnections);
-                ds.setMinConnectionsPerPartition(minConnections);
-                ds.setPartitionCount(1);
-                this.name = name;
-            } else {
-                throw new ExceptionInInitializerError(
-                        String.format("Unable to create a database connection wrapper for: %s", site.getMicroEnv()));
-            }
-        } else {
-            throw new IllegalArgumentException(
-                    String.format("%s, not found.", dbConfigFile.getAbsolutePath()));
-        }
-        return this;
+        int minConnections = (int) Math.max(1, Math.ceil(maxConnections / 3)); // todo let the user configure it
+        ds.setMaxConnectionsPerPartition(maxConnections);
+        ds.setMinConnectionsPerPartition(minConnections);
+        ds.setPartitionCount(1);
+        this.name = name;
+      } else {
+        throw new ExceptionInInitializerError(
+            String.format("Unable to create a database connection wrapper for: %s", site.getMicroEnv()));
+      }
+    } else {
+      throw new IllegalArgumentException(
+          String.format("%s, not found.", dbConfigFile.getAbsolutePath()));
     }
+    return this;
+  }
 
-    @Override
-    public String getName() {
-        return name;
+  @Override
+  public String getName() {
+    return name;
+  }
+
+  public void before() {
+    before(false);
+  }
+
+  public void before(boolean manageTransaction) {
+    Base.open(ds);
+    if (manageTransaction) {
+      Base.openTransaction();
     }
+  }
 
-    public void before() {
-        before(false);
-    }
+  public void after() {
+    after(false);
+  }
 
-    public void before(boolean manageTransaction) {
-        Base.open(ds);
+  public void after(boolean manageTransaction) {
+    if (Base.hasConnection()) {
+      try {
         if (manageTransaction) {
-            Base.openTransaction();
+          Base.commitTransaction();
         }
+      } finally {
+        Base.close();
+      }
     }
+  }
 
-    public void after() {
-        after(false);
-    }
+  public void onException() {
+    onException(false);
+  }
 
-    public void after(boolean manageTransaction) {
-        if (Base.hasConnection()) {
-            try {
-                if (manageTransaction) {
-                    Base.commitTransaction();
-                }
-            } finally {
-                Base.close();
-            }
-        }
+  public void onException(boolean manageTransaction) {
+    if (manageTransaction) {
+      Base.rollbackTransaction();
     }
+  }
 
-    public void onException() {
-        onException(false);
-    }
+  public boolean isDebug() {
+    return debug;
+  }
 
-    public void onException(boolean manageTransaction) {
-        if (manageTransaction) {
-            Base.rollbackTransaction();
-        }
-    }
+  public Base getBase() {
+    return new Base();
+  }
 
-    public boolean isDebug() {
-        return debug;
-    }
+  public DataSource getDS() {
+    return ds;
+  }
 
-    public Base getBase() {
-        return new Base();
-    }
-
-    public DataSource getDS() {
-        return ds;
-    }
+  @Override
+  public void shutdown() {
+    // todo: not sure if there is anything to be done here?!
+  }
 }
 

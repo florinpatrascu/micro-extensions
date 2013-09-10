@@ -40,52 +40,52 @@ import java.util.Map;
  * @since $Revision$ (created: 2013-02-03 7:42 PM)
  */
 public class STViewRenderer implements ViewRenderer {
-    public static final String NAME = "st";
-    private char delimiterStartChar = '<';
-    private char delimiterStopChar = '>';
+  public static final String NAME = "st";
+  private char delimiterStartChar = '<';
+  private char delimiterStopChar = '>';
 
-    @Override
-    public long render(String path, Repository repository, MicroContext context, Writer out) throws FileNotFoundException, ViewException {
+  @Override
+  public long render(String path, Repository repository, MicroContext context, Writer out) throws FileNotFoundException, ViewException {
 
-        if (repository != null && out != null) {
-            try {
+    if (repository != null && out != null) {
+      try {
 
-                String source = repository.read(path);
-                ST st = new ST(source, delimiterStartChar, delimiterStopChar);
-                //todo: Think! Should I use: st.write( ...)??
-                if (!CollectionUtils.isEmpty(context.getMap())) {
-                    for (Map.Entry<String, Object> entry : ((Map<String, Object>) context.getMap()).entrySet()) {
-                        if (!entry.getKey().equalsIgnoreCase("rack.logger")) {
-                            st.add(entry.getKey(), entry.getValue());
-                        }
-                    }
-                }
-                return IO.copy(new StringReader(st.render()), out);
-
-            } catch (FileNotFoundException e) {
-                throw new FileNotFoundException(String.format("%s not found.", path));
-            } catch (Exception e) {
-                throw new ViewException(e.getMessage());
+        String source = repository.read(path);
+        ST st = new ST(source, delimiterStartChar, delimiterStopChar);
+        //todo: Think! Should I use: st.write( ...)??
+        if (!CollectionUtils.isEmpty(context.getMap())) {
+          for (Map.Entry<String, Object> entry : ((Map<String, Object>) context.getMap()).entrySet()) {
+            if (!entry.getKey().equalsIgnoreCase("rack.logger")) {
+              st.add(entry.getKey(), entry.getValue());
             }
+          }
         }
-        return 0;
-    }
+        return IO.copy(new StringReader(st.render()), out);
 
-    @Override
-    @SuppressWarnings("unchecked")
-    public void loadConfiguration(SiteContext site, Map<String, Object> configuration) throws Exception {
-        if (configuration != null) {
-            String delimiters = (String) configuration.get("delimiters");
-
-            if (delimiters != null && delimiters.length() > 0) {
-                delimiterStartChar = delimiters.charAt(0);
-                delimiterStopChar = delimiters.length() > 1 ? delimiters.charAt(1) : delimiterStartChar;
-            }
-        }
+      } catch (FileNotFoundException e) {
+        throw new FileNotFoundException(String.format("%s not found.", path));
+      } catch (Exception e) {
+        throw new ViewException(e.getMessage());
+      }
     }
+    return 0;
+  }
 
-    @Override
-    public String getName() {
-        return NAME;
+  @Override
+  @SuppressWarnings("unchecked")
+  public void loadConfiguration(SiteContext site, Map<String, Object> configuration) throws Exception {
+    if (configuration != null) {
+      String delimiters = (String) configuration.get("delimiters");
+
+      if (delimiters != null && delimiters.length() > 0) {
+        delimiterStartChar = delimiters.charAt(0);
+        delimiterStopChar = delimiters.length() > 1 ? delimiters.charAt(1) : delimiterStartChar;
+      }
     }
+  }
+
+  @Override
+  public String getName() {
+    return NAME;
+  }
 }

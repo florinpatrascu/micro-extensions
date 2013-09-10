@@ -28,20 +28,24 @@ import java.util.Map;
  * @since $Revision$ (created: 2013-02-03 7:43 PM)
  */
 public class STExtension implements Extension {
-    private String name;
+  private String name;
 
-    @SuppressWarnings("unchecked")
-    @Override
-    public Extension register(String name, SiteContext site, Map<String, Object> configuration) throws Exception {
-        // File extensionPath = new File(site.getApplicationConfigPath(), "/extensions/st");
-        this.name = name;
-        site.getTemplateEnginesManager().addTemplateEngine(site, (Map) configuration);
-        return this;
-    }
+  @SuppressWarnings("unchecked")
+  @Override
+  public Extension register(String name, SiteContext site, Map<String, Object> configuration) throws Exception {
+    // File extensionPath = new File(site.getApplicationConfigPath(), "/extensions/st");
+    this.name = name;
+    site.getTemplateEnginesManager().addTemplateEngine(site, (Map) configuration);
+    return this;
+  }
 
-    @Override
-    public String getName() {
-        return name;
-    }
+  @Override
+  public String getName() {
+    return name;
+  }
+
+  @Override
+  public void shutdown() {
+  }
 }
 
