@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+
+<configuration>
+  <jdbc>
+    <driver>org.h2.Driver</driver>
+    <url>jdbc:h2:test</url>
+    <user>sa</user>
+    <password></password>
+  </jdbc>
+
+  <generator>
+    <database>
+      <name>org.jooq.util.h2.H2Database</name>
+      <includes>.*</includes>
+      <excludes></excludes>
+      <inputSchema>PUBLIC</inputSchema>
+    </database>
+
+    <generate>
+    </generate>
+
+    <target>
+      <packageName>models</packageName>
+      <directory>./</directory>
+    </target>
+  </generator>
+</configuration>
+

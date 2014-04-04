@@ -1,0 +1,9 @@
+class: ca.simplegames.micro.extensions.JOOQExtension
+options:
+  # use one of these supported opensource SQL dialects:
+  # - CUBRID, Derby, Firebird, H2, HSQLDB, MariaDB, MySQL, Postgres, SQLite
+  dialect: H2 # case sensitive, please
+  models: models
+  debug: true
+  db: db.yml
+

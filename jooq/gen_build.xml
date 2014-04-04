@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+ ~ This script is used for generating your Java classes from the supported databases
+ ~  - prototype
+ -->
+
+<project default="generator" basedir=".">
+  <property environment="env"/>
+  <property name="micro.dir" value="${env.MICRO_HOME}"/>
+  <property name="out.dir" value="classes"/>
+  <property name="lib.dir" value="config/extensions/jooq/lib"/>
+
+  <tstamp>
+    <format property="TODAY" pattern="yyyy-MM-dd HH:mm:ss"/>
+  </tstamp>
+
+  <path id="generator_classpath">
+    <pathelement location="${out.dir}"/>
+    <path location="${lib.dir}/jooq-3.3.1.jar"/>
+    <path location="${lib.dir}/jooq-codegen-3.3.1.jar"/>
+    <path location="${lib.dir}/jooq-meta-3.3.1.jar"/>
+  </path>
+
+  <!-- Compiler options -->
+  <property name="compiler.debug" value="on"/>
+  <property name="compiler.optimize" value="on"/>
+  <property name="compiler.generate.no.warnings" value="off"/>
+  <property name="compiler.encoding" value="utf-8"/>
+  <property name="compiler.args" value=""/>
+  <property name="compiler.source" value="1.6"/>
+  <property name="compiler.target" value="1.6"/>
+
+
+  <target name="compile" description="compile and instrument user models">
+    <delete dir="${out.dir}/models"/>
+    <delete dir="${out.dir}/controllers"/>
+
+    <javac destdir="classes"
+           debug="${compiler.debug}"
+           deprecation="${compiler.generate.no.warnings}"
+           encoding="utf8"
+           includeantruntime="false"
+           optimize="${compiler.optimize}">
+
+      <src path="models:controllers"/>
+
+      <classpath refid="generator_classpath"/>
+      <classpath>
+        <fileset dir="${lib.dir}">
+          <include name="**/*.jar"/>
+        </fileset>
+        <fileset dir="lib">
+          <include name="**/*.jar"/>
+        </fileset>
+        <fileset dir="${micro.dir}/lib/">
+          <include name="**/*.jar"/>
+        </fileset>
+        <fileset dir="${micro.dir}/dist">
+          <include name="**/*.jar"/>
+        </fileset>
+      </classpath>
+
+    </javac>
+
+  </target>
+
+  <target name="generator" depends="compile" description="Generate the classes">
+    <java classname="org.jooq.util.GenerationTool" fork="true">
+      <sysproperty key="outputDirectory" value="${out.dir}"/>
+      <classpath refid="generator_classpath"/>
+      <arg value="/codegen.xml"/>
+    </java>
+  </target>
+
+</project>

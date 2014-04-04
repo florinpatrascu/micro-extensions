@@ -1,0 +1,5 @@
+controllers:
+  - controller:
+      name: controllers.FindArticles
+      options: 
+        top: 10
